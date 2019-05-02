@@ -1,0 +1,71 @@
+﻿@model IPagedList<ASP_NET_MVC_Q5.Models.ProductModel>
+
+
+
+@using PagedList;
+
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm())
+{
+    <p>
+
+        @*@Html.DropDownListFor(m => m., Model.LocaleListItem, new { @class = "form-control" })*@
+        @*@Html.DropDownListFor(model => model.LocaleListItem, ViewData["items"] as IEnumerable<SelectListItem>            , "請選擇", new { @class = "form-control" })*@
+        @*@Html.ValidationMessageFor(model => model.LocaleListItem, "", new { @class = "text-danger" })*@
+
+
+        Find by Locale: @Html.DropDownList("SearchLocale", "All")
+        Find by name: @Html.TextBox("SearchName")
+        Find by Price: @Html.TextBox("SearchMinPrice") ~ @Html.TextBox("SearchMaxPrice")
+        <input type="submit" value="Search" />
+    </p>
+}
+
+<table class="table">
+    <tr>
+        <th>Locale</th>
+        <th>Product_Name</th>
+        <th>Price</th>
+        <th>Create_Date</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Locale)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product_Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Create_Date)
+            </td>
+
+        </tr>
+    }
+
+</table>
+<div class="box24 align_c">
+    <ul class="pagination">
+        <p align="left"> @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }), PagedListRenderOptions.Classic)</p>
+    </ul>
+    <div class="page_box r_float">
+        <p align="right">@(Model.TotalItemCount) results,Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+        <span class="page_bt">
+            <a href="#" class="arrow04 disable" title="Previous"></a>
+            <span></span>
+            <a href="#" class="arrow05" title="Next"></a>
+        </span>
+    </div>
+</div>
