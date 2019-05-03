@@ -33,8 +33,10 @@ namespace ASP_NET_MVC_Q5.Controllers
             var data = new List<ProductModel>();
             data = list();
 
+            //搜尋結果列表
             var searchResult = new List<string>();
 
+            
             var query = from d in data
                         orderby d.Id
                         select d.Product_Name;
@@ -52,6 +54,7 @@ namespace ASP_NET_MVC_Q5.Controllers
 
          
 
+            //輸入搜尋條件
             if (!String.IsNullOrEmpty(searchLocale))
             {
                 select = select.Where(s => s.Locale.Contains(searchLocale));
@@ -59,29 +62,36 @@ namespace ASP_NET_MVC_Q5.Controllers
 
             if (!String.IsNullOrEmpty(searchName))
             {
-                select = select.Where(s => s.Product_Name.Contains(searchName));
+                select = select.Where(s => s.Product_Name.ToLower().Contains(searchName.ToLower()));
             }
 
-            if (!string.IsNullOrEmpty(searchMinPrice))
+            if (!string.IsNullOrEmpty(searchMinPrice)&&float.TryParse(searchMinPrice, out float num))
             {
                 float price = Convert.ToSingle(searchMinPrice);
                 select = select.Where(x => x.Price >= price);
 
             }
-            if (!string.IsNullOrEmpty(searchMaxPrice))
+            if (!string.IsNullOrEmpty(searchMaxPrice)&& float.TryParse(searchMaxPrice,out float num2))
             {
                 float price = Convert.ToSingle(searchMaxPrice);
-                select = select.Where(x => x.Price <= price);
-                
+                select = select.Where(x => x.Price <= price);                
             }
-            
 
-            int pageSize = 5;
+            ViewBag.searchName = searchName;
+            ViewBag.searchMinPrice = searchMinPrice;
+            ViewBag.searchMaxPrice = searchMaxPrice;
+
+            //int pageSize = 5;
+            //int pageNumber = (page ?? 1);
+            //var result = select.ToPagedList(pageNumber, pageSize);
+
+            int pageSize = 3;
             int pageNumber = (page ?? 1);
-            var result = select.ToPagedList(pageNumber, pageSize);
+            return View(select.ToPagedList(pageNumber, pageSize));
 
 
-            return View(result);
+
+            //return View(result);
             
         }
 

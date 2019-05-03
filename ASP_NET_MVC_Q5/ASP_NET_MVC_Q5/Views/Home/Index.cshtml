@@ -11,21 +11,20 @@
 
 <h2>Index</h2>
 
-@using (Html.BeginForm())
-{
+<form id="form">
     <p>
 
         @*@Html.DropDownListFor(m => m., Model.LocaleListItem, new { @class = "form-control" })*@
-        @*@Html.DropDownListFor(model => model.LocaleListItem, ViewData["items"] as IEnumerable<SelectListItem>            , "請選擇", new { @class = "form-control" })*@
+        @*@Html.DropDownListFor(model => model.LocaleListItem, ViewData["items"] as IEnumerable<SelectListItem>, "請選擇", new { @class = "form-control" })*@
         @*@Html.ValidationMessageFor(model => model.LocaleListItem, "", new { @class = "text-danger" })*@
 
 
         Find by Locale: @Html.DropDownList("SearchLocale", "All")
-        Find by name: @Html.TextBox("SearchName")
-        Find by Price: @Html.TextBox("SearchMinPrice") ~ @Html.TextBox("SearchMaxPrice")
+        Find by name: <input type="text" id="SearchName" name="SearchName" value="@ViewBag.searchName">
+        Find by Price:  <input type="text" id="SearchMinPrice" name="SearchMinPrice" placeholder="Please enter the number" value="@ViewBag.searchMinPrice" onkeyup="return ValidateFloat($(this),value)" /> ~ <input type="text" id="SearchMaxPrice" name="SearchMaxPrice" placeholder="Please enter the number" value="@ViewBag.searchMaxPrice" onkeyup="return ValidateFloat($(this),value)" />
         <input type="submit" value="Search" />
     </p>
-}
+</form>
 
 <table class="table">
     <tr>
@@ -56,16 +55,47 @@
     }
 
 </table>
-<div class="box24 align_c">
-    <ul class="pagination">
-        <p align="left"> @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }), PagedListRenderOptions.Classic)</p>
-    </ul>
-    <div class="page_box r_float">
-        <p align="right">@(Model.TotalItemCount) results,Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
-        <span class="page_bt">
-            <a href="#" class="arrow04 disable" title="Previous"></a>
-            <span></span>
-            <a href="#" class="arrow05" title="Next"></a>
-        </span>
-    </div>
-</div>
+@*<div class="box24 align_c">
+        <ul class="pagination">
+            <p align="left"> @Html.PagedListPager(Model, Page => Url.Action("Index", new { Page }), PagedListRenderOptions.Classic)</p>
+        </ul>
+        <div class="page_box r_float">
+            <p align="right">@(Model.TotalItemCount) results,Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+            <span class="page_bt">
+                <a href="#" class="arrow04 disable" title="Previous"></a>
+                <span></span>
+                <a href="#" class="arrow05" title="Next"></a>
+            </span>
+        </div>
+    </div>*@
+
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchName = ViewBag.searchName, searchMinPrice = ViewBag.searchMinPrice , searchMaxPrice = ViewBag.searchMaxPrice }))
+
+<script language=javascript>
+    function ValidateFloat(e, pnumber) {
+        if (!/^\d+[.]?\d*$/.test(pnumber)) {
+            $(e).val(/^\d+[.]?\d*/.exec($(e).val()));
+        }
+
+        return false;
+
+    }
+
+
+
+    function GoToPage(page) {
+        var targetFormID = '#form';
+        if ($(targetFormID).size() > 0) {
+            $('<input>').attr({ type: 'hidden', id: 'page', name: 'page', value: page }).appendTo($(from));
+            $(from).submit();
+        }
+    }
+</script>
+
+
+
+<script src="~/Scripts/jquery-3.4.1.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.js" type="text/javascript"></script>
