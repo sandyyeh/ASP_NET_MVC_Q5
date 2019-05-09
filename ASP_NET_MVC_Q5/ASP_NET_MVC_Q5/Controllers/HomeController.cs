@@ -31,7 +31,7 @@ namespace ASP_NET_MVC_Q5.Controllers
         {
 
             var data = new List<ProductModel>();
-            data = list();
+            data = List();
 
             //搜尋結果列表
             var searchResult = new List<string>();
@@ -77,34 +77,27 @@ namespace ASP_NET_MVC_Q5.Controllers
                 select = select.Where(x => x.Price <= price);                
             }
 
-            ViewBag.searchName = searchName;
-            ViewBag.searchMinPrice = searchMinPrice;
-            ViewBag.searchMaxPrice = searchMaxPrice;
+            ViewBag.SearchName = searchName;
+            ViewBag.SearchMinPrice = searchMinPrice;
+            ViewBag.SearchMaxPrice = searchMaxPrice;
 
-            //int pageSize = 5;
-            //int pageNumber = (page ?? 1);
-            //var result = select.ToPagedList(pageNumber, pageSize);
-
+      
             int pageSize = 3;
             int pageNumber = (page ?? 1);
+
             return View(select.ToPagedList(pageNumber, pageSize));
-
-
-
-            //return View(result);
-            
         }
 
 
         //讀取 data.json
-        public List<ProductModel> list()
+        public List<ProductModel> List()
         {
             string file = Server.MapPath("~/App_Data/data.json");
             string json = System.IO.File.ReadAllText(file);
-            List<ProductModel> _list = JsonConvert.DeserializeObject<List<ProductModel>>(json);
+            List<ProductModel> list = JsonConvert.DeserializeObject<List<ProductModel>>(json);
 
 
-            return _list;
+            return list;
         }
     }
 }
